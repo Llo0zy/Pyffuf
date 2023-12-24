@@ -10,8 +10,7 @@ import os, sys
 import platform
 import requests as rq
 from colorama import Fore
-import threading
-import queue
+
 
 #########################
 ##      VARIABLES      ##
@@ -99,35 +98,9 @@ class DIR():
         self.timeout = timeout
         self.avoidCode = avoidCode
         self.showCode = showCode
-        self.Threads = Threads
-        self.scan_queue = queue.Queue()  # Cola para distribuir los directorios entre los hilos
-        self.scan_semaphore = threading.Semaphore()  # Semáforo para coordinar el escaneo
 
-        for directory in self.wordlist:
-            self.scan_queue.put(directory)  # Agregar cada directorio a la cola
-
-    def FUNgetSC(self):
-        threads = []
-
-        for _ in range(5):
-            thread = threading.Thread(target=self.FUNthreads)
-            threads.append(thread)
-            thread.start()
-
-        for thread in threads:
-            thread.join()
-
-    def FUNthreads(self):
-        while True:
-            try:
-                directory = self.scan_queue.get_nowait()  # Intentar obtener un directorio de la cola sin bloqueo
-            except queue.Empty:
-                break  # La cola está vacía, todos los directorios han sido procesados
-            else:
-                with self.scan_semaphore:  # Adquirir el semáforo para garantizar que solo un hilo escanea a la vez
-                    self.sc()
     @staticmethod
-    def sc():
+    def FUNgetSC():
         if args.avoid != None:
             dir_instance.filterAvoidCode()
 
