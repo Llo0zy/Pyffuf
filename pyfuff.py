@@ -11,7 +11,6 @@ import platform
 import requests as rq
 from colorama import Fore
 
-
 #########################
 ##      VARIABLES      ##
 #########################
@@ -51,6 +50,7 @@ class STMSuccess(STM):
 
     def display_status_dns(self):
         print(f"Success - DNS: {self.url} - {self.st_code}")
+
 class STMRedirection(STM):
     def __init__(self, url, status_code, status_type):
         super().__init__(url, status_code)
@@ -63,7 +63,8 @@ class STMRedirection(STM):
         print(f"Success - Directory: {self.url} - {self.st_code}")
 
     def display_status_dns(self):
-        print(f"Success - DNS: {self.url} - {self.st_code}")    
+        print(f"Success - DNS: {self.url} - {self.st_code}")
+        
 class STMForbidden(STM):
     def __init__(self, url, status_code, status_type):
         super().__init__(url, status_code)
@@ -77,6 +78,7 @@ class STMForbidden(STM):
 
     def display_status_dns(self):
         print(f"Success - DNS: {self.url} - {self.st_code}")    
+
 class STMServerError(STM):
     def __init__(self, url, status_code, status_type):
         super().__init__(url, status_code)
@@ -92,13 +94,6 @@ class STMServerError(STM):
         print(f"Success - DNS: {self.url} - {self.st_code}")
 
 class DIR():
-    def __init__(self, url, wordlist, timeout=5, avoidCode='', showCode='', Threads=None):
-        self.url = url
-        self.wordlist = wordlist
-        self.timeout = timeout
-        self.avoidCode = avoidCode
-        self.showCode = showCode
-
     @staticmethod
     def FUNgetSC():
         if args.avoid != None:
@@ -109,6 +104,15 @@ class DIR():
 
         else:
             dir_instance.showAllCode()
+
+
+    def __init__(self, url:str, wordlist:str, timeout:int=5, avoidCode:str='', showCode:str='', Threads:int=None):
+        self.url = url
+        self.wordlist = wordlist
+        self.timeout = timeout
+        self.avoidCode = avoidCode
+        self.showCode = showCode
+        self.Threads = Threads        
 
     @classmethod
     def make_request(cls, url, directory, timeout):
@@ -318,6 +322,35 @@ def checkWordlist(path:str) -> list:
 #      MAIN FUNCTIONS       #
 #############################
 # Desactualizado
+def getDNS(url:str, wordlist:list) -> list:
+    if checkWordlist(wordlist):
+        pass
+    else:
+        print("Wordlist is not valid.")
+        sys.exit()
+
+    foundedDNS = []
+    redireccionDNS = []
+    forbiddenDNS = []
+    servererror = []
+
+    for dns in wordlist:
+        petition = rq.get(url+dns)
+
+        if 200 <= petition.status_code < 300:
+            foundedDNS.append(dns)
+        
+        elif 300 <= petition.status_code < 400:
+            redireccionDNS.append(dns)
+
+        elif 400 <= petition.status_code < 500:
+            forbiddenDNS.append(dns)
+
+        elif 500 <= petition.status_code < 600:
+            servererror.append(dir)
+
+    return foundedDNS, forbiddenDNS, servererror
+
 
 ######################################
 ##      ARGUMENTS CONFIGURATION     ##
