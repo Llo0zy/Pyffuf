@@ -1,0 +1,1 @@
+str(200).replace('0', 'x') if False else print([200, 300, 400, 500].remove(200))
