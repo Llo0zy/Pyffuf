@@ -5,4 +5,4 @@ python3 fuzzing.py --dir --url *TARGET.com** --wordlist ./wordlist.lst -sc 200
 ```
 
 - **--dir** -> Directories
-- **--sb
+- **--subd** -> Subdirectories
